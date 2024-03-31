@@ -24,62 +24,57 @@ function encryptText(text) {
     return encryptedText;
 }
 
-encryptButton.addEventListener("click", function() {
+encryptButton.addEventListener("click", function () {
     const inputText = inputTextArea.value;
     const encryptedText = encryptText(inputText);
     outputTextArea.value = encryptedText;
     inputTextArea.value = ""
 });
 
-copiarButton.addEventListener("click", function() {
+copiarButton.addEventListener("click", function () {
     outputTextArea.select();
     document.execCommand("copy");
     outputTextArea.value = "";
 });
 
- function decryptText(text) {
-    const chaves = {
-        "ai": "a",
-        "enter": "e",
-        "imes": "i",
-        "ober": "o",
-        "ufat": "u",
-    };
+const keys = {
+    "ai": "a",
+    "enter": "e",
+    "imes": "i",
+    "ober": "o",
+    "ufat": "u"
+};
 
-    let decryptedText = "";
-    let substring = "";
+function decryptText(phrase) {
+    let accumulator = "";
+    let offset = 0;
 
-    for (let i = 0; i < text.length; i++) {
-        const char = text[i];
+    while (offset < phrase.length) {
+        let currentKeys = "";
+        let noEncodeFound = false;
 
-        if (chaves[substring + char] !== undefined) {
-            substring += char;
-        } else {
-            if (substring !== "") {
-                decryptedText += chaves[substring];
-                substring = "";
+        for (let j = offset; j < phrase.length; j++) {
+            currentKeys += phrase[j];
+            if (keys[currentKeys]) {
+                accumulator += keys
+                [currentKeys];
+                offset += currentKeys.length;
+                noEncodeFound = true;
+                break;
             }
-            decryptedText += char;
+        }
+
+        if (!noEncodeFound) {
+            accumulator += phrase[offset];
+            offset += 1;
         }
     }
 
-    if (substring !== "") {
-        decryptedText += chaves[substring];
-    }
-
-    return decryptedText;
+    return accumulator;
 }
 
-decryptButton.addEventListener("click", function() {
+decryptButton.addEventListener("click", function () {
     const inputText = inputTextArea.value;
     const decryptedText = decryptText(inputText);
     outputTextArea.value = decryptedText;
-}); 
-
-//"a": "ai",
-//"e": "enter",
-//"i": "imes",
-//"o": "ober",
-//"u": "ufat",
-const matrizCodigo = [["a" , "ai"], ["e" , "enter"], ["i" , "imes"], ["o" , "ober"], ["u" , "ufat"]];
-console.table(matrizCodigo);
+});
